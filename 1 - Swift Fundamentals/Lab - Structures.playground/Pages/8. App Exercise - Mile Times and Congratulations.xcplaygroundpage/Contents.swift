@@ -26,7 +26,7 @@ print(myWorkout.averageMileTime)
 struct Steps {
     var steps: Int {
         willSet {
-            if steps == goal - 1 {
+            if newValue == goal {
                 print("Congratulations!")
             }
         }
