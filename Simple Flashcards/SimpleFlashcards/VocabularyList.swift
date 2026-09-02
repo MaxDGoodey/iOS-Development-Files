@@ -148,6 +148,13 @@ struct Vocab {
             synonyms: ["Branching", "Decision making"],
             notes: ["Includes if, else, switch astatements, and ternaries"],
             referenceImage: ""
+        ),
+        Vocab(
+            word: "React",
+            definition: "Free open source frontend Javascript library used for building dyanmic web user interfaces",
+            synonyms: ["Components", "virtual DOM", "declarative", "dsx", "unidirectional data-flow"],
+            notes: ["similar in concept to swift-UI, virtual DOM is similar to the struct based view hierarchy. Swift-UI DSL similar in purpose to JSX. Data is also unidirectional in both."],
+            referenceImage: ""
         )
     ]
 }
