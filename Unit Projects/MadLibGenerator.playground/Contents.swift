@@ -60,6 +60,6 @@ var myMadLib2 = MadLibGenerator(adjective: "", noun: "house", verb: "swam", noun
 print(myMadLib2.storyTitle)
 print(myMadLib2.generateMadLib())
 
-var myMadLib3 = MadLibGenerator(adjective: "swim", noun: "house", verb: "swam", noun2: "car", noun3: "wheel", verb2: "drive", noun4: "tree", verb3: "ran", noun5: "pencil", noun6: "paper")
+var myMadLib3 = MadLibGenerator(adjective: "swim0", noun: "house", verb: "swam", noun2: "car", noun3: "wheel", verb2: "drive", noun4: "tree", verb3: "ran", noun5: "pencil", noun6: "paper", selectedStoryNumber: 2)
 print(myMadLib3.storyTitle)
 print(myMadLib3.generateMadLib())
