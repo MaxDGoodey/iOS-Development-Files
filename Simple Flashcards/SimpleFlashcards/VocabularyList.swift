@@ -160,7 +160,7 @@ struct Vocab {
             word: "Function Signature",
             definition: "The name, parameters, and return type of a function.",
             synonyms: ["prototype", "definition"],
-            notes: ["define show a function should be called"],
+            notes: ["defines how a function should be called"],
             referenceImage: ""
         )
     ]
