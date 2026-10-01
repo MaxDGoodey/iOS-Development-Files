@@ -38,7 +38,7 @@ extension Double {
     print(badEmail.isValidEmail)
     
     let wholeDouble: Double = 1
-    let nonWholeDouble: Double = 0.5
+    let nonWholeDouble: Double = 0.5 
     
     print(wholeDouble.isInteger)
     print(nonWholeDouble.isInteger)
