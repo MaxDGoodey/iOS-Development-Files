@@ -30,6 +30,7 @@ func selectionSort(_ playCounts: [Int]) -> [Int] {
         var smallestIndex = startIndex
         for index in (startIndex + 1)..<sortedCounts.count {
             // Add comparisons += 1 here
+            comparisons += 1
             if sortedCounts[index] < sortedCounts[smallestIndex] {
                 smallestIndex = index
             }
@@ -82,7 +83,7 @@ func mergeSort(_ playCounts: [Int]) -> [Int] {
 
 
 //:  In a comment, write which lines are the base case in `mergeSort`.
-
+// lines 73-75 are the best case for mergesort. If playcounts.count <= 1 it just returns playcounts, only needing one check.
 
 
 
@@ -96,37 +97,40 @@ func mergeSort(_ playCounts: [Int]) -> [Int] {
 //:  Before you run the code below, predict which sort will make the fewest comparisons on 10 play counts. Write it in a comment. Then run it and fill in the "10 shuffled" column of the table.
 
 
-// Prediction:
+// Prediction: merge
+let alreadySorted = Array(1...10)
+
+let bigShuffle = Array(1...100).shuffled()
 
 let shuffledPlayCounts = [42, 7, 93, 15, 68, 3, 81, 29, 56, 10]
 
-let bubbleSorted = bubbleSort(shuffledPlayCounts)
-let selectionSorted = selectionSort(shuffledPlayCounts)
+let bubbleSorted = bubbleSort(bigShuffle)
+let selectionSorted = selectionSort(bigShuffle)
 mergeSortComparisons = 0
-let mergeSorted = mergeSort(shuffledPlayCounts)
+let mergeSorted = mergeSort(bigShuffle)
 print("Merge sort: \(mergeSortComparisons) comparisons")
 print(mergeSorted)
 
 /*
  Sort      | 10 shuffled | 10 already sorted | 100 shuffled
- Bubble    |             |                   |
- Selection |             |                   |
- Merge     |             |                   |
+ Bubble    | 45            | 45                  | 4950
+ Selection | 45            | 45                  | 4950
+ Merge     | 24            | 15                  | 530
  */
 
 
 //:  Below is a list that is already in order. Predict in a comment whether being sorted already will change the comparisons for each sort. Then add the lines to sort `alreadySorted` with all three sorts, the same way as above. Fill in the "10 already sorted" column.
 
 
-let alreadySorted = Array(1...10)
 
-// Prediction:
+
+// Prediction: merge
 
 
 //:  `shuffled()` returns the same items in a random order. Sort `bigShuffle` with all three sorts the same way, and fill in the "100 shuffled" column. Your merge sort number may be a little different from a classmate's, because the order is random.
 
 
-let bigShuffle = Array(1...100).shuffled()
+
 
 
 //:  In a comment, explain why bubble and selection sort are O(n²) and merge sort is O(n log n). Use your 100 shuffled numbers as the example.
