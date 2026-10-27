@@ -66,7 +66,7 @@ struct ContentView: View {
                     }
                 }
             }
-            .navigationTitle("How Computers Work")
+            .navigationTitle("CS Study Guide")
         }
     }
 }

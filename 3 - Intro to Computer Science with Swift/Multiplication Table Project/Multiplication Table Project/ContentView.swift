@@ -9,7 +9,7 @@ struct Question: Identifiable {
 }
 
 @MainActor
-final class QuizViewModel: ObservableObject {
+class QuizViewModel: ObservableObject {
     @Published var questions: [Question] = []
     @Published var currentIndex = 0
     @Published var userAnswer = ""
@@ -57,14 +57,15 @@ final class QuizViewModel: ObservableObject {
 }
 
 struct HomeView: View {
-    @State private var maxTable = 12
+    @State private var maxTable = 24
+    let initialMaxTable = 24
     @State private var questionCount = 10
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("Tables") {
-                    Stepper("Up to \(maxTable)", value: $maxTable, in: 2...12)
+                    Stepper("Up to \(maxTable)", value: $maxTable, in: 2...initialMaxTable)
                 }
                 Section("Questions") {
                     Picker("Count", selection: $questionCount) {
@@ -130,7 +131,7 @@ struct ResultView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("You got \(score) out of \(total) correct!")
+            Text("You got \(score) out of \(total) correct")
                 .font(.title)
                 .multilineTextAlignment(.center)
             Button("Play again", action: playAgain)

@@ -10,15 +10,15 @@ extension Topic {
             summary: [
                 QuestionAnswer(
                     question: "What are the main parts of a computer, and what does each one do?",
-                    answer: "The CPU executes instructions and does the calculations. RAM holds the data and code currently in use. Storage (an SSD) keeps files long term. The GPU handles graphics and other highly parallel work. The motherboard connects everything, and the power supply or battery keeps it all running."
+                    answer: "The CPU executes instructions and does the calculations. RAM holds the data and code currently in use. Storage (an SSD) keeps files long term. GPU handles small math processes over and over."
                 ),
                 QuestionAnswer(
                     question: "What's the difference between memory and storage?",
-                    answer: "Memory (RAM) is very fast but small, and it loses its contents when power is off. Storage is slower but much larger, and it keeps data permanently. Apps are loaded from storage into memory so the CPU can work with them quickly."
+                    answer: "Memory is used temporarily and is very active, usually you have much less memory than storage. Storage is what keeps all of your apps when theyre not in use."
                 ),
                 QuestionAnswer(
-                    question: "Why do computers use binary?",
-                    answer: "Computers are built from billions of transistors, tiny switches that are either on or off. Two states map neatly to 1 and 0, and they are simple and reliable to build and read. Numbers, text, images and sound can all be encoded as long patterns of bits."
+                    question: "What's the difference between a input and output device?",
+                    answer: "An input device is something that communicates to the CPU for user inputs. Examples include a mouse, a keyboard, and a mic. An output device is something the CPU communicates to in order to show information. Examples include a screen, speakers, and a haptic device."
                 )
             ],
             example: "Think of a kitchen. The CPU is the chef, RAM is the countertop where ingredients being used right now sit, and storage is the pantry. A bigger countertop lets the chef work on more at once, but the pantry is where everything is kept when you go home."
@@ -29,18 +29,18 @@ extension Topic {
             summary: [
                 QuestionAnswer(
                     question: "What are the stack and the heap, and what goes in each?",
-                    answer: "The stack is fast, automatically managed memory for local variables and value types like structs, enums and small values. It grows and shrinks as functions are called and return. The heap is a flexible pool for data that must live longer or has a size unknown at compile time, such as class instances and closures that capture values."
+                    answer: "The stack is where information for functions are kept. It's temporary, and each stack is individual. The heap is where information for classes are kept. They aren't as temporary and aren't kept individually."
                 ),
                 QuestionAnswer(
                     question: "What happens when you copy a struct vs. copy a class?",
-                    answer: "Copying a struct creates an independent copy, so changing one does not affect the other (value semantics). Copying a class instance copies only the reference, so both variables point to the same object and a change through one is visible through the other (reference semantics)."
+                    answer: "Copying a struct creates an independent copy, so changing one does not affect the other. Copying a class instance copies only the reference, so both variables point to the same object and a change through one is visible through the other."
                 ),
                 QuestionAnswer(
-                    question: "How does ARC decide when to free a class instance?",
-                    answer: "Automatic Reference Counting keeps a count of strong references to each class instance. When a new strong reference is made the count goes up, and when one goes away it goes down. When the count reaches zero, the instance is deallocated. Two objects holding strong references to each other create a retain cycle that is never freed, which is why we use weak or unowned references."
+                    question: "How and when does RAM get distributed to different apps?",
+                    answer: "The CPU decides what apps get what RAM, and how much each gets. If the app is actively running, it uses more RAM, and if it's in the background it uses much less."
                 )
             ],
-            example: "Think of a shared Google Doc. Copying a struct is like printing the document: you and a friend each hold your own paper, so scribbling on yours changes nothing on theirs. Copying a class is like sharing a link: everyone opens the same document, so an edit by one person shows up for all. ARC is like Google automatically deleting the document once the last person with a link lets go of it. The stack is the sticky note on your desk that you toss when you finish a task, while the heap is the shared cloud storage where documents stay until nobody needs them."
+            example: "Think of a shared Google Doc. Copying a struct is like printing the document: you and a friend each hold your own paper, so scribbling on yours changes nothing on theirs. Copying a class is like sharing a link: everyone opens the same document, so an edit by one person shows up for all."
         ),
         Topic(
             title: "Algorithms and Big-O",
@@ -59,7 +59,7 @@ extension Topic {
                     answer: "Sets and dictionaries use hashing. A hash function turns the key into a number that points almost directly to where the item is stored, so a lookup takes O(1) on average, no matter how large the collection is. Searching an unsorted array means checking elements one by one, which is O(n). The trade-off is that hashed collections use more memory and the keys must be Hashable."
                 )
             ],
-            example: "Imagine finding a name in a printed phone book with 1,000 pages. Linear search is starting at page 1 and reading every name until you find it, which could take 1,000 pages. Binary search is opening to the middle, seeing whether your name comes before or after, and throwing away half the book, again and again, so you finish in about 10 steps. A Set or Dictionary is like a coat check: you hand over your ticket and the attendant goes straight to your coat, whether the room holds 10 coats or 10,000. An algorithm is the set of instructions you follow, and Big-O describes how much longer they take as the book gets bigger."
+            example: "Imagine trying to find a name in a printed phone book with 1,000 pages. Linear search is starting at page 1 and reading every name until you find it, which could take 1,000 pages. Binary search is opening to the middle, seeing whether your name comes before or after, and throwing away half the book, again and again, so you finish in about 10 steps. A Set or Dictionary is like a coat check: you hand over your ticket and the attendant goes straight to your coat, whether the room holds 10 coats or 10,000."
         ),
         Topic(
             title: "Systems Architecture",
@@ -71,7 +71,7 @@ extension Topic {
                 ),
                 QuestionAnswer(
                     question: "What's the difference between a program, a process and a thread?",
-                    answer: "A program is a file of instructions stored on disk. A process is a running instance of a program, with its own protected memory. A thread is a single path of execution inside a process. A process has at least one thread, and its threads share the process's memory."
+                    answer: "A program is a file of instructions stored in storage. A process is a running instance of a program, with its own memory. A thread is a single path of execution inside a process. A process has at least one thread, and its threads share the process's memory."
                 ),
                 QuestionAnswer(
                     question: "Why does UI work have to happen on the main thread?",
@@ -113,10 +113,10 @@ extension Topic {
                 ),
                 QuestionAnswer(
                     question: "What does one of the principles look like in Swift code?",
-                    answer: "Dependency Inversion: instead of a view model creating a specific network class itself, it depends on a protocol. The real service or a fake one for tests can be passed in without changing the view model. See the example below."
+                    answer: "Dependency Inversion: instead of a view model creating a specific network class itself, it depends on a protocol. The real service or a fake one for tests can be passed in without changing the view model."
                 )
             ],
-            example: "A lamp doesn't care where its power comes from. It only needs a standard wall outlet, so it works the same whether the electricity comes from solar panels, a wind farm or a battery backup. That is Dependency Inversion: the lamp depends on the outlet standard (the protocol) and not on one specific power plant (a concrete type). If the power company changes how it makes electricity, you don't rewire every lamp in the house, and in a test you can plug into a battery pack instead of the real grid."
+            example: "A lamp doesn't care where its power comes from. It only needs a standard wall outlet, so it works the same whether the electricity comes from solar panels, a wind farm or a battery backup."
         )
     ]
 }
