@@ -8,24 +8,11 @@
 //
 
 import SwiftUI
-// MODEL: plain data the view doesn't use
-struct Book: Identifiable {
-    let id = UUID()
-    var title: String
-    var author: String
-    var pageCount: Int
-    var isFinished: Bool
-}
 
 struct ReadingLogScreen: View {
     // VIEWMODEL: data the view uses
-    @State private var books: [Book] = [
-        Book(title: "Hatchet", author: "Gary Paulsen", pageCount: 195, isFinished: true),
-        Book(title: "The Hobbit", author: "J.R.R. Tolkien", pageCount: 310, isFinished: false),
-        Book(title: "Holes", author: "Louis Sachar", pageCount: 233, isFinished: true),
-        Book(title: "Ender's Game", author: "Orson Scott Card", pageCount: 324, isFinished: false)
-    ]
-
+    @State private var viewModel = ReadingLogViewModel()
+    
     @State private var newTitle = ""
     @State private var newAuthor = ""
     @State private var newPageCount = 0
@@ -35,9 +22,9 @@ struct ReadingLogScreen: View {
             List {
                 Section("Stats") {
                     // VIEWMODEL: view shouldnt have logic
-                    Text("Books finished: \(books.filter { $0.isFinished }.count)")
+                    Text("Books finished: \(viewModel.booksFinishedCount)")
                     // VIEWMODEL: view shouldnt have logic
-                    Text("Pages read: \(books.filter { $0.isFinished }.reduce(0) { $0 + $1.pageCount })")
+                    Text("Pages read: \(viewModel.pagesRead)")
                 }
 
                 Section("Add a Book") {
@@ -46,8 +33,8 @@ struct ReadingLogScreen: View {
                     Stepper("Pages: \(newPageCount)", value: $newPageCount, in: 0...2000, step: 10)
                     // VIEWMODEL: the view shouldnt have logic, put this in the viewmodel as a function
                     Button("Add Book") {
-                        let newBook = Book(title: newTitle, author: newAuthor, pageCount: newPageCount, isFinished: false)
-                        books.append(newBook)
+                        viewModel.addBook(title: newTitle, author: newAuthor, pageCount: newPageCount)
+                        
                         newTitle = ""
                         newAuthor = ""
                         newPageCount = 0
@@ -56,7 +43,7 @@ struct ReadingLogScreen: View {
 
                 Section("Currently Reading") {
                     // VIEWMODEL: put in viewmodel to make this easier to repeat
-                    ForEach(books.filter { !$0.isFinished }) { book in
+                    ForEach(viewModel.currentlyReading) { book in
                         // VIEW: only affects the view, not the data
                         HStack {
                             VStack(alignment: .leading) {
@@ -70,9 +57,7 @@ struct ReadingLogScreen: View {
                             Spacer()
                             // VIEWMODEL: also should be a func in the viewmodel
                             Button("Finish") {
-                                if let index = books.firstIndex(where: { $0.id == book.id }) {
-                                    books[index].isFinished = true
-                                }
+                                viewModel.markFinished(book)
                             }
                             .buttonStyle(.bordered)
                         }
@@ -80,7 +65,7 @@ struct ReadingLogScreen: View {
                 }
 
                 Section("Finished") {
-                    ForEach(books.filter { $0.isFinished }) { book in
+                    ForEach(viewModel.finishedBooks) { book in
                         VStack(alignment: .leading) {
                             Text(book.title)
                                 .font(.headline)
