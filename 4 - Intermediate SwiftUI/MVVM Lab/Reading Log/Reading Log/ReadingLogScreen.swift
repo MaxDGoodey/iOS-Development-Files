@@ -21,17 +21,11 @@ struct ReadingLogScreen: View {
         NavigationStack {
             List {
                 Section("Stats") {
-                    // VIEWMODEL: view shouldnt have logic
-                    Text("Books finished: \(viewModel.booksFinishedCount)")
-                    // VIEWMODEL: view shouldnt have logic
-                    Text("Pages read: \(viewModel.pagesRead)")
+                    ReadingStatsView(viewModel: viewModel)
                 }
 
                 Section("Add a Book") {
-                    TextField("Title", text: $newTitle)
-                    TextField("Author", text: $newAuthor)
-                    Stepper("Pages: \(newPageCount)", value: $newPageCount, in: 0...2000, step: 10)
-                    // VIEWMODEL: the view shouldnt have logic, put this in the viewmodel as a function
+                    NewBookFields(title: $newTitle, author: $newAuthor, pageCount: $newPageCount)
                     Button("Add Book") {
                         viewModel.addBook(title: newTitle, author: newAuthor, pageCount: newPageCount)
                         
@@ -39,12 +33,11 @@ struct ReadingLogScreen: View {
                         newAuthor = ""
                         newPageCount = 0
                     }
+                    .disabled(!viewModel.canAdd(title: newTitle, author: newAuthor, pageCount: newPageCount))
                 }
 
                 Section("Currently Reading") {
-                    // VIEWMODEL: put in viewmodel to make this easier to repeat
                     ForEach(viewModel.currentlyReading) { book in
-                        // VIEW: only affects the view, not the data
                         HStack {
                             VStack(alignment: .leading) {
                                 Text(book.title)
@@ -55,7 +48,6 @@ struct ReadingLogScreen: View {
                                     .foregroundStyle(.secondary)
                             }
                             Spacer()
-                            // VIEWMODEL: also should be a func in the viewmodel
                             Button("Finish") {
                                 viewModel.markFinished(book)
                             }
@@ -76,9 +68,33 @@ struct ReadingLogScreen: View {
                     }
                 }
             }
-            // VIEW: only effects the view not the data
             .navigationTitle("Reading Log")
         }
+    }
+}
+
+// This takes bindings and not the viewmodel because it doesn't need to see the viewmodel, only what the user is inputting
+
+struct NewBookFields: View {
+    @Binding var title: String
+    @Binding var author: String
+    @Binding var pageCount: Int
+    
+    var body: some View {
+        TextField("Title", text: $title)
+        TextField("Author", text: $author)
+        Stepper("Pages: \(pageCount)", value: $pageCount, in: 0...2000, step: 10)
+    }
+}
+
+// This uses viewModel because it does need to access the viewmodel data, it saves space and makes updating automatic
+
+struct ReadingStatsView: View {
+    let viewModel: ReadingLogViewModel
+    
+    var body: some View {
+        Text("Books finished: \(viewModel.booksFinishedCount)")
+        Text("Pages read: \(viewModel.pagesRead)")
     }
 }
 
@@ -86,16 +102,21 @@ struct ReadingLogScreen: View {
     ReadingLogScreen()
 }
 
-// 4, you would have to fix all of them
-// The lines inside stats, they wouldn't need to
-// With MVVM, the person moving the stats would only look at the view, and the person changing the rule would only look at the model. without MVVM they might conflict and cause issues
-// moving logic out of a view makes it easier to change because you dont have to sort through any views to get to it, you can just access it directly.
+// 1. User taps the finish button
+// 2. markFinished is called in the viewModel passing in book from the ForEach loop
+// 3. In the viewModel it checks if the book can be finished
+// 4. It changes the isFinished property to true
+// 5. The computed properties currentlyReading and finishedBooks update with the new values
+// 6. Because ReadingLogViewModel is observable, the viewModel passed in from ReadingLogScreen into ReadingStatsView is updated, and the Text's in ReadingStatsView update according to the new viewModel data
 
-// ReadingLogViewModel
-// var books, holds every book you want, finished or not
-// var unfinishedBooks, an array of every book you havent finished
-// var finishedBooks, an array of every book you finished
-// var finishedBooksCount, a int telling you how many books you finished
-// var pagesRead, a int telling you how many pages youve read by reading finishedBooks
-// func addBook, adds a book to the books array and unfinishedBooks array
-// func finishBook, adds a book to the finishedBooks array and removes it from the unfinishedBooks array
+
+// averagePagesPerBook: ViewModel, similar to pages read
+// .foregroundStyle(.secondary): View, only effects the view and not the data
+// isLongBook(_:): ViewModel, functions should be in the viewmodel
+// searchText: View, similar to the newTitle property
+// showingAddBookSheet: View, only effects the view and doesn't relate to the viewModel data
+// Text(book.author): View, only effects the view and not the data
+
+
+
+// i feel like MVVM is just how little code can you write while keeping it readable, and really in general code management

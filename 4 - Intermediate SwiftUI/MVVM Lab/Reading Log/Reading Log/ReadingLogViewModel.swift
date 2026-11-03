@@ -40,4 +40,26 @@ class ReadingLogViewModel {
             books[index].isFinished = true
         }
     }
+    
+    func canAdd(title: String, author: String, pageCount: Int) -> Bool {
+        let isDuplicate = books.contains(where: { $0.title.lowercased() == title.lowercased() })
+        
+        if title.isEmpty {
+            return false
+        }
+        
+        if author.isEmpty {
+            return false
+        }
+        
+        if pageCount <= 0 {
+            return false
+        }
+        
+        if isDuplicate {
+            return false
+        }
+        
+        return true
+    }
 }
