@@ -26,7 +26,7 @@ class StepTracker {
 }
 
 extension EnvironmentValues {
-    @Entry var workoutTitle: String = ""
+    @Entry var tracker: StepTracker = StepTracker()
 }
 
 struct GoalsScreen: View {
@@ -37,10 +37,9 @@ struct GoalsScreen: View {
         VStack(spacing: 20) {
             Text("Daily goal: \(dailyGoal)")
                 .font(.headline)
-            GoalStepper()
-            WorkoutTitleRow()
-                .environment(\.workoutTitle, "Morning Run")
-            TodaySection(tracker: tracker)
+            GoalStepper(goal: $dailyGoal)
+            WorkoutTitleRow(workoutTitle: "Morning Run")
+            TodaySection()
         }
         .padding()
         .frame(width: 320, height: 480)
@@ -49,7 +48,7 @@ struct GoalsScreen: View {
 
 // Problem 1
 struct GoalStepper: View {
-    @State private var goal = 10000
+    @Binding var goal: Int
 
     var body: some View {
         Stepper("Goal: \(goal)", value: $goal, in: 1000...30000, step: 1000)
@@ -58,7 +57,7 @@ struct GoalStepper: View {
 
 // Problem 2
 struct WorkoutTitleRow: View {
-    @Environment(\.workoutTitle) private var workoutTitle
+    let workoutTitle: String
 
     var body: some View {
         Text("Next workout: \(workoutTitle)")
@@ -67,20 +66,18 @@ struct WorkoutTitleRow: View {
 
 // Problem 3
 struct TodaySection: View {
-    let tracker: StepTracker
-
     var body: some View {
         VStack {
             Text("Today")
                 .font(.title)
-            TodayStepsLabel(tracker: tracker)
-            AddStepsButton(tracker: tracker)
+            TodayStepsLabel()
+            AddStepsButton()
         }
     }
 }
 
 struct TodayStepsLabel: View {
-    let tracker: StepTracker
+    @Environment(\.tracker) private var tracker
 
     var body: some View {
         Text("Steps: \(tracker.steps)")
@@ -88,7 +85,7 @@ struct TodayStepsLabel: View {
 }
 
 struct AddStepsButton: View {
-    let tracker: StepTracker
+    @Environment(\.tracker) private var tracker
 
     var body: some View {
         Button("Add 500 steps") {

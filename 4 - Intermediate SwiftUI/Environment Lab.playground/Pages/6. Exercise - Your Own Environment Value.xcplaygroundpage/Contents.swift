@@ -11,12 +11,13 @@ import SwiftUI
 import PlaygroundSupport
 
 struct RecipeTag: View {
+    @Environment(\.tagColor) private var tagColor
     let tagName: String
 
     var body: some View {
         Text(tagName)
             .padding(8)
-            .background(Color.gray)
+            .background(tagColor)
             .clipShape(.capsule)
     }
 }
@@ -30,18 +31,24 @@ struct RecipeBookView: View {
                 RecipeTag(tagName: "Pasta")
                 RecipeTag(tagName: "Salad")
             }
+            .environment(\.tagColor, .green)
             Text("Desserts")
                 .font(.headline)
             HStack {
                 RecipeTag(tagName: "Brownies")
                 RecipeTag(tagName: "Pie")
             }
+            .environment(\.tagColor, .pink)
             Text("Everything Else")
                 .font(.headline)
             RecipeTag(tagName: "Leftovers")
         }
         .frame(width: 320, height: 480)
     }
+}
+
+extension EnvironmentValues {
+    @Entry var tagColor: Color = .gray
 }
 
 PlaygroundPage.current.setLiveView(RecipeBookView())
@@ -64,7 +71,7 @@ PlaygroundPage.current.setLiveView(RecipeBookView())
 
 
 //:  `tagColor` is one simple value with a default. In a comment below, explain why `@Entry` is a better fit for it than an `@Observable` class shared with `.environment`.
-
+// It takes much less time to write, and is more readabl, and has no functions or data other than the simple value
 
 
 

@@ -28,17 +28,59 @@ class StepService {
 }
 
 struct FitnessHomeScreen: View {
-
+    @State var stepTracker = StepTracker()
+    @State var stepService = StepService()
+    
     var body: some View {
         VStack(spacing: 20) {
             Text("Today")
                 .font(.largeTitle)
-
+            StepCountLabel()
+            ButtonsSection()
         }
         .frame(width: 320, height: 480)
+        .environment(stepTracker)
+        .environment(stepService)
     }
 }
 
+struct StepCountLabel: View {
+    @Environment(StepTracker.self) private var stepTracker
+    
+    var body: some View {
+        Text("\(stepTracker.steps) out of \(stepTracker.goal) steps.")
+    }
+}
+
+struct AddWalkButton: View {
+    @Environment(StepTracker.self) private var stepTracker
+    
+    var body: some View {
+        Button("Add a walk") {
+            stepTracker.addSteps(1000)
+        }
+    }
+}
+
+struct SyncButton: View {
+    @Environment(StepTracker.self) private var stepTracker
+    @Environment(StepService.self) private var stepService
+    
+    var body: some View {
+        Button("Sync watch") {
+            stepTracker.addSteps(stepService.stepsFromWatch())
+        }
+    }
+}
+
+struct ButtonsSection: View {
+    var body: some View {
+        HStack {
+            AddWalkButton()
+            SyncButton()
+        }
+    }
+}
 PlaygroundPage.current.setLiveView(FitnessHomeScreen())
 
 
@@ -58,6 +100,7 @@ PlaygroundPage.current.setLiveView(FitnessHomeScreen())
 
 
 
+// results tab doesnt show up
 
 
 /*:
@@ -67,7 +110,9 @@ PlaygroundPage.current.setLiveView(FitnessHomeScreen())
  */
 
 
-
+// PlaygroundPage.current.setLiveView(StepCountLabel())
+// .environment(StepTracker())
+// .evironment(\.colorScheme, .dark)
 
 
 /*:

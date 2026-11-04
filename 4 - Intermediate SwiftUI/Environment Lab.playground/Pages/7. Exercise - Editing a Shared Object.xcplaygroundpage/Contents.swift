@@ -21,7 +21,7 @@ struct PlaylistScreen: View {
         VStack(spacing: 20) {
             PlaylistHeader()
             PlaylistEditor()
-
+            PlaylistEditorFromInit(settings: settings)
         }
         .environment(settings)
         .padding()
@@ -45,10 +45,23 @@ struct PlaylistEditor: View {
     @Environment(PlaylistSettings.self) private var settings
 
     var body: some View {
+        @Bindable var settings = settings
         VStack {
-            TextField("Playlist name", text: .constant(""))
+            TextField("Playlist name", text: $settings.playlistName)
                 .textFieldStyle(.roundedBorder)
-            Toggle("Shuffle", isOn: .constant(false))
+            Toggle("Shuffle", isOn: $settings.shuffleOn)
+        }
+    }
+}
+
+struct PlaylistEditorFromInit: View {
+    @Bindable var settings: PlaylistSettings
+
+    var body: some View {
+        VStack {
+            TextField("Playlist name", text: $settings.playlistName)
+                .textFieldStyle(.roundedBorder)
+            Toggle("Shuffle", isOn: $settings.shuffleOn)
         }
     }
 }
@@ -72,7 +85,7 @@ PlaygroundPage.current.setLiveView(PlaylistScreen())
 
 
 //:  In a comment below, explain why `@Bindable` goes inside `body` in `PlaylistEditor`, but on the property in `PlaylistEditorFromInit`.
-
+// In PlaylistEditor, the environment isnt given a binding, meaning the binding needs to. in PlaylistEditorFromInit, its data comes directly from the parent, so it doesnt need to have an environment, and it can be out of the body
 
 
 
