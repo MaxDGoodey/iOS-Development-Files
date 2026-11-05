@@ -15,12 +15,12 @@ struct BrowseView: View {
                     .id(1)
                 ShirtsRowView()
                 PantsRowView()
+                OrderSummaryView()
                 Button("Scroll to Top") {
                     scrollTo(1, proxy: proxy)
                 }
                 .buttonStyle(.glassProminent)
             }
-            .padding()
         }
         
     }
@@ -43,9 +43,59 @@ struct ItemView: View {
     }
 }
 
+struct OrderItemView: View {
+    var item: Clothing
+    
+    var body: some View {
+        GridRow {
+            Text(item.name)
+            Text(item.size)
+            Text(String(format: "%.2f", item.price))
+        }
+    }
+}
+
+struct OrderSummaryView: View {
+    var listOfOrders: [Clothing] = [hats.first!, shirts.first!, pants.first!]
+    
+    var totalPrice: String {
+        var total: Double = 0
+        
+        for index in (0..<listOfOrders.count) {
+            total += listOfOrders[index].price
+        }
+        
+        return String(total)
+    }
+    
+    var body: some View {
+        Section {
+            Grid {
+                GridRow {
+                    Text("Item")
+                    Text("Size")
+                    Text("Price")
+                        .gridColumnAlignment(.trailing)
+                }
+                Divider()
+                ForEach(listOfOrders, id: \.self) { item in
+                    OrderItemView(item: item)
+                }
+                Divider()
+                GridRow {
+                    Text("Total")
+                        .gridCellColumns(2)
+                    Text(String(totalPrice))
+                }
+            }
+        }
+        .padding()
+    }
+}
+
 struct HatsRowView: View {
     var body: some View {
-        Section(header: Text("Hats").font(.title)) {
+        Section {
             ScrollView(.horizontal) {
                 LazyHStack {
                     ForEach(hats, id: \.self) {hat in
@@ -56,6 +106,9 @@ struct HatsRowView: View {
                 .padding()
             }
             .scrollTargetBehavior(.viewAligned)
+        } header: {
+            Text("Hats")
+                .font(.title)
         }
     }
 }
@@ -67,7 +120,7 @@ struct ShirtsRowView: View {
     ]
     
     var body: some View {
-        Section(header: Text("Shirts").font(.title)) {
+        Section {
             ScrollView(.horizontal) {
                 LazyHGrid(rows: shirtsLayout) {
                     ForEach(shirts, id: \.self) { shirt in
@@ -76,6 +129,9 @@ struct ShirtsRowView: View {
                 }
                 .padding()
             }
+        } header: {
+            Text("Shirts")
+                .font(.title)
         }
     }
 }
@@ -89,7 +145,7 @@ struct PantsRowView: View {
     ]
     
     var body: some View {
-        Section(header: Text("Pants").font(.title)) {
+        Section {
             ScrollView(.horizontal) {
                 LazyHGrid(rows: pantsLayout) {
                     ForEach(shirts, id: \.self) { shirt in
@@ -99,6 +155,9 @@ struct PantsRowView: View {
                 .padding()
             }
             .scrollTargetBehavior(.paging)
+        } header: {
+            Text("Pants")
+                .font(.title)
         }
     }
 }
