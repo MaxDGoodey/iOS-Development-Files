@@ -7,33 +7,92 @@
 
 import SwiftUI
 
-
-struct DragonListScreen: View {
-    @State private var path = NavigationPath()
+struct MainTabView: View {
+    @State private var mainRouter = MainRouter()
     
     var body: some View {
-        NavigationStack(path: $path) {
-            List(dragons, id: \.self) { dragon in
-                NavigationLink(dragon.name, value: dragon)
-                
+        TabView(selection: $mainRouter.selectedTab) {
+            Tab("Dragons", systemImage: "", value: .dragons) {
+                DragonListScreen()
+                    .environment(mainRouter)
             }
-            .toolbar() {
-                Button("Random Dragon") {
-                    path.append(dragons.randomElement()!)
-                }
-                
+            Tab("Riders", systemImage: "", value: .riders) {
+                RidersScreen()
+                    .environment(mainRouter)
             }
-            .navigationTitle("Dragons")
-            .navigationDestination(for: Dragon.self) { dragon in
-                DragonDetailScreen(path: $path, dragon: dragon)
-            }
-
+        }
+        .sheet(isPresented: $mainRouter.isShowingSettings) {
+            SettingsScreen(isShowingSettings: $mainRouter.isShowingSettings)
         }
     }
 }
 
+struct SettingsScreen: View {
+    @Binding var isShowingSettings: Bool
+    
+    var body: some View {
+        Text("Settings")
+        Button("Done") {
+            isShowingSettings = false
+        }
+    }
+}
+
+struct RidersScreen: View {
+    @Environment(MainRouter.self) var mainRouter
+    
+    var body: some View {
+        List {
+            ForEach(riders, id: \.self) {
+                rider in
+                HStack {
+                    Text("\(rider.name), Dragon: \(rider.dragonName)")
+                    Button("Find Dragon") {
+                        mainRouter.selectedTab = .dragons
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+struct DragonListScreen: View {
+    @State private var dragonsRouter = DragonsRouter()
+    @Environment(MainRouter.self) var mainRouter
+    
+    var body: some View {
+        NavigationStack(path: $dragonsRouter.navigationPath) {
+            List(dragons, id: \.self) { dragon in
+                Button(dragon.name) {
+                    dragonsRouter.navigateTo(route: .dragon(dragon))
+                }
+            }
+            .toolbar() {
+                Button("Random Dragon") {
+                    dragonsRouter.navigateTo(route: .dragon(dragons.randomElement()!))
+                }
+                
+                Button {
+                    mainRouter.isShowingSettings = true
+                } label: {
+                    Image(systemName: "gear")
+                }
+                
+            }
+            .navigationTitle("Dragons")
+            .navigationDestination(for: DragonsRouter.Route.self) {
+                route in
+                dragonsRouter.view(for: route)
+            }
+            
+        }
+        .environment(dragonsRouter)
+    }
+}
+
 struct DragonDetailScreen: View {
-    @Binding var path: NavigationPath
+    @Environment(DragonsRouter.self) var dragonsRouter
     let dragon: Dragon
     
     var body: some View {
@@ -42,16 +101,18 @@ struct DragonDetailScreen: View {
         Text(String(dragon.fireRating))
         Text(dragon.lore)
         ForEach(dragon.powers, id: \.self) { power in
-            NavigationLink(power.name, value: power)
+            Button(power.name) {
+                dragonsRouter.navigateTo(route: .power(power))
+            }
         }
-        .navigationDestination(for: Power.self) { power in
-            PowerDetailScreen(path: $path, power: power)
+        .navigationDestination(for: DragonsRouter.Route.self) { route in
+            dragonsRouter.view(for: route)
         }
     }
 }
 
 struct PowerDetailScreen: View {
-    @Binding var path: NavigationPath
+    @Environment(DragonsRouter.self) var dragonsRouter
     
     let power: Power
     
@@ -59,12 +120,12 @@ struct PowerDetailScreen: View {
         Text(power.name)
         Text(power.description)
         Button("Back to Dragons") {
-            path = NavigationPath()
+            dragonsRouter.goHome()
         }
     }
 }
 
 
 #Preview {
-    DragonListScreen()
+    MainTabView()
 }

@@ -46,3 +46,15 @@ let dragons = [
                Power(name: "Snow Cloak", description: "A swirl of snow that hides the dragon.")
            ])
 ]
+
+struct Rider: Hashable {
+    let name: String
+    let dragonName: String
+}
+
+let riders = [
+    Rider(name: "Aria Stone", dragonName: "Ember"),
+    Rider(name: "Milo Reyes", dragonName: "Skyla"),
+    Rider(name: "Tess Hart", dragonName: "Grimtooth"),
+    Rider(name: "Jonah Vale", dragonName: "Frostfang")
+]
